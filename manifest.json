@@ -1,0 +1,20 @@
+{
+  "name": "AI Alarm Clock",
+  "short_name": "AI Alarm",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f0c29",
+  "theme_color": "#00d2ff",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/8832/8832108.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/8832/8832108.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

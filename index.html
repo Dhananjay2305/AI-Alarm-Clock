@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Alarm Clock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Top Controls -->
+        <div class="top-controls">
+            <button id="themeToggleBtn" class="icon-btn control-btn" title="Toggle Theme">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+            <button id="historyBtn" class="icon-btn control-btn" title="History">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </button>
+            <button id="cloudBtn" class="icon-btn control-btn" title="Cloud Sync">
+                <i class="fa-solid fa-cloud"></i>
+            </button>
+            <button id="settingsBtn" class="icon-btn control-btn" title="Voice Settings">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+        </div>
+
+        <!-- Settings Panel -->
+
+
+        <div id="settingsPanel" class="settings-panel hidden">
+            <div class="settings-header">
+                <h3>Voice Settings</h3>
+                <button id="closeSettingsBtn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="setting-group">
+                <label for="voiceSelect">AI Voice</label>
+                <select id="voiceSelect"></select>
+            </div>
+            <div class="setting-group">
+                <label for="toneSelect">Alarm Tone</label>
+                <select id="toneSelect">
+                    <option value="sine">Soft Pulse (Default)</option>
+                    <option value="square">Digital Beep</option>
+                    <option value="sawtooth">Urgent Buzz</option>
+                    <option value="triangle">Mellow Chime</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label for="volumeRange">Master Volume (<span id="volumeValue">50%</span>)</label>
+                <input type="range" id="volumeRange" min="0" max="1" step="0.1" value="0.5">
+            </div>
+            <div class="setting-group">
+                <label for="rateRange">Speech Rate (<span id="rateValue">1</span>x)</label>
+                <input type="range" id="rateRange" min="0.5" max="2" step="0.1" value="1">
+            </div>
+            <div class="setting-group">
+                <label for="pitchRange">Speech Pitch (<span id="pitchValue">1</span>)</label>
+                <input type="range" id="pitchRange" min="0" max="2" step="0.1" value="1">
+            </div>
+
+            <div class="setting-group">
+                <label for="accentColor">Accent Color</label>
+                <div class="color-options">
+                    <button class="color-btn" data-color="#00d2ff" style="background: #00d2ff;"></button>
+                    <button class="color-btn" data-color="#ff416c" style="background: #ff416c;"></button>
+                    <button class="color-btn" data-color="#00b894" style="background: #00b894;"></button>
+                    <button class="color-btn" data-color="#fdcb6e" style="background: #fdcb6e;"></button>
+                    <button class="color-btn" data-color="#6c5ce7" style="background: #6c5ce7;"></button>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <label for="snoozeDuration">Default Snooze Duration</label>
+                <select id="snoozeDuration">
+                    <option value="5">5 Minutes</option>
+                    <option value="10">10 Minutes</option>
+                    <option value="15">15 Minutes</option>
+                </select>
+            </div>
+            <button id="testVoiceBtn" class="btn-secondary small">Test Voice</button>
+        </div>
+
+        <!-- History Panel -->
+        <div id="historyPanel" class="settings-panel hidden">
+            <div class="settings-header">
+                <h3>Alarm History</h3>
+                <button id="closeHistoryBtn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="historyList" class="history-list">
+                <!-- Logs injected here -->
+                <p class="empty-state">No history yet.</p>
+            </div>
+            <button id="clearHistoryBtn" class="btn-secondary small" style="margin-top:10px;">Clear History</button>
+        </div>
+
+        <!-- Cloud Panel -->
+        <div id="cloudPanel" class="settings-panel hidden">
+            <div class="settings-header">
+                <h3>Cloud Sync</h3>
+                <button id="closeCloudBtn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div id="authContainer">
+                <div class="input-group">
+                    <input type="email" id="emailInput" placeholder="Email">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="passwordInput" placeholder="Password">
+                </div>
+                <button id="loginBtn" class="btn-primary">Login</button>
+                <button id="signupBtn" class="btn-secondary" style="margin-top:10px;">Sign Up</button>
+                <p id="authMessage" class="auth-message"></p>
+            </div>
+
+            <div id="syncContainer" class="hidden">
+                <div class="user-info">
+                    <p>Logged in as: <span id="userEmailDisplay"></span></p>
+                </div>
+                <div class="sync-actions">
+                    <button id="pushBtn" class="btn-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Sync to
+                        Cloud</button>
+                    <button id="pullBtn" class="btn-secondary"><i class="fa-solid fa-cloud-arrow-down"></i> Restore from
+                        Cloud</button>
+                </div>
+                <button id="logoutBtn" class="btn-danger" style="margin-top:20px;">Logout</button>
+            </div>
+        </div>
+
+        <div class="clock-card">
+            <h1 class="current-time" id="currentTime">00:00:00</h1>
+            <p class="date-display" id="dateDisplay">Loading Date...</p>
+
+            <!-- Add New Alarm Section -->
+            <div class="alarm-controls" id="alarmControls">
+                <div class="input-row">
+                    <div class="input-group time-input">
+                        <label for="alarmTime">Time</label>
+                        <input type="time" id="alarmTime" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Repeat Days</label>
+                    <div class="days-selector">
+                        <input type="checkbox" id="day-0" value="0"><label for="day-0">S</label>
+                        <input type="checkbox" id="day-1" value="1"><label for="day-1">M</label>
+                        <input type="checkbox" id="day-2" value="2"><label for="day-2">T</label>
+                        <input type="checkbox" id="day-3" value="3"><label for="day-3">W</label>
+                        <input type="checkbox" id="day-4" value="4"><label for="day-4">T</label>
+                        <input type="checkbox" id="day-5" value="5"><label for="day-5">F</label>
+                        <input type="checkbox" id="day-6" value="6"><label for="day-6">S</label>
+                    </div>
+                </div>
+
+                <div class="input-group note-input">
+                    <label for="alarmNote">Note / Reminder</label>
+                    <div class="note-wrapper">
+                        <input type="text" id="alarmNote" placeholder="e.g., Gym, Meds" autocomplete="off">
+                        <button id="micBtn" class="mic-btn"><i class="fa-solid fa-microphone"></i></button>
+                    </div>
+                </div>
+                <button id="addAlarmBtn" class="btn-primary"><i class="fa-solid fa-plus"></i> Add Alarm</button>
+            </div>
+
+            <!-- Alarms List -->
+            <div class="alarms-list-container">
+                <h3>Your Alarms</h3>
+                <div id="alarmsList" class="alarms-list">
+                    <!-- Alarms will be injected here -->
+                    <p class="empty-state">No alarms set yet.</p>
+                </div>
+            </div>
+
+            <!-- Ringing Overlay / Modal -->
+            <div class="ringing-overlay hidden" id="ringingOverlay">
+                <div class="ringing-content">
+                    <h2 class="wake-up-text">Time's Up!</h2>
+                    <div class="animation-ring"></div>
+                    <p id="ringingNote" class="ringing-note">...</p>
+
+                    <div class="action-buttons">
+                        <button id="stopAlarmBtn" class="btn-danger">Stop & Listen</button>
+                        <button id="snoozeAlarmBtn" class="btn-secondary">Snooze (5m)</button>
+                    </div>
+
+                    <!-- AI Assistant Chat Bubble -->
+                    <div id="aiAssistant" class="ai-assistant hidden">
+                        <div class="avatar">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="bubble">
+                            <p id="assistantText">Speaking...</p>
+                            <div class="speaking-waves">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
