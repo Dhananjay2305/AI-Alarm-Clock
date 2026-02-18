@@ -4,9 +4,8 @@ This is a modern AI-powered alarm clock web app built using Vanilla JavaScript. 
 
 A modern **AI Alarm Clock Web App** with notes, repeat days, voice assistant reminders, alarm history, theme toggle, and PWA offline support.
 
-This project is built using **HTML, CSS, and JavaScript** (no frameworks).
+This project is built using **HTML, CSS, and JavaScript** .
 
----
 
 ## 🚀 Features
 
@@ -23,5 +22,5 @@ This project is built using **HTML, CSS, and JavaScript** (no frameworks).
 ✅ Alarm Tone Options (Soft Pulse, Digital Beep, Urgent Buzz, Mellow Chime)  
 ✅ Master Volume Control  
 ✅ Cloud Sync (Mock version using LocalStorage)  
-✅ PWA Support (Installable + Offline caching using Service Worker)
+
 
